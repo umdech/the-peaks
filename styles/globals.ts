@@ -6,9 +6,10 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     }
     body {
+        color: ${({ theme }) => theme.colors.textColor};
         font-family: ${({ theme }) => theme.fonts.familyBody};
-        font-size: 16px;
-        line-height: 1.5em;
+        font-size: 14px;
+        line-height: 1.4em;
         margin: 0;
         padding: 0;
         -webkit-font-smoothing: antialiased;
@@ -18,14 +19,22 @@ const GlobalStyle = createGlobalStyle`
         font-family: ${({ theme }) => theme.fonts.familyHeading};
         margin-top: 0;
     }
+    h1 {
+        font-size: 34px;
+        line-height: 1.2em;
+    }
     h2 {
         font-size: 48px;
     }
     a {
         text-decoration: none !important;
     }
+    p {
+        margin: 0;
+        margin-bottom: 1.5rem;
+    }
     strong {
-        font-weight: 500;
+        font-weight: 700;
     }
     .container {
         margin-left: auto;

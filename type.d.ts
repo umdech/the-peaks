@@ -1,6 +1,8 @@
 type FieldProps = {
     thumbnail: string,
-    trailText: string
+    trailText: string,
+    body: string,
+    main
 }
 
 interface IPost {
@@ -16,4 +18,11 @@ interface IPost {
     isHosted: boolean,
     pillarId: string,
     pillarName: string
+}
+
+type PostResponse = {
+    status: string,
+    message?: string,
+    userTier?: string,
+    content?: IPost
 }

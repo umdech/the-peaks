@@ -19,6 +19,7 @@ const TopContainer = styled.div`
             .title-contains {
                 h3 {
                     font-size: 24px;
+                    max-height: 101px;
                 }
             }
         }
