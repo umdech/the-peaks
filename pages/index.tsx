@@ -1,11 +1,19 @@
-import Layout from "@/components/layouts";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 
-export default function Home() {
+import Layout from "@/components/layouts";
+const TopStories = dynamic(() => import('@/components/top-stories'))
+
+
+const Home = () => {
     return (
         <Layout>
             <div className="container">
-                <h1>The peaks</h1>
+                <TopStories />
+                <Link href="/page2">Page 2</Link>
             </div>
         </Layout>
     )
 }
+
+export default Home

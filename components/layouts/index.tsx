@@ -3,6 +3,7 @@ import Head from 'next/head'
 import React from 'react'
 
 const Header = dynamic(() => import('@/components/layouts/header'))
+const Footer = dynamic(() => import('@/components/layouts/footer'))
 
 type Props = {
     title?: string,
@@ -18,6 +19,7 @@ const Layout = ({ title, children }: Props) => {
             <Header />
             <div className="page">
                 {children}
+                <Footer />
             </div>
         </>
     )

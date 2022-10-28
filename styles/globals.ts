@@ -18,13 +18,31 @@ const GlobalStyle = createGlobalStyle`
         font-family: ${({ theme }) => theme.fonts.familyHeading};
         margin-top: 0;
     }
+    h2 {
+        font-size: 48px;
+    }
+    a {
+        text-decoration: none !important;
+    }
+    strong {
+        font-weight: 500;
+    }
     .container {
         margin-left: auto;
         margin-right: auto;
-        max-width: 1110px;
+        max-width: calc(1130px + 2rem);
         padding-left: 1rem;
         padding-right: 1rem;
         width: 100%;
+    }
+    .page {
+        min-height: 100vh;
+        padding-bottom: calc(240px + 4rem);
+        padding-top: calc(124px + 4rem);
+        position: relative;
+        @media ${({ theme }) => theme.breakpoints.md} {
+            padding-top: calc(116px + 4rem);
+        }
     }
     /* Placeholder */
     ::placeholder {

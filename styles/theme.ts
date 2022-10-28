@@ -4,7 +4,10 @@ declare module "styled-components" {
     export interface DefaultTheme {
         colors: {
             primaryColor: string,
-            white: string
+            white: string,
+            red: string,
+            yellow: string,
+            blue: string
         },
         fonts: {
             familyHeading: string,
@@ -21,7 +24,10 @@ declare module "styled-components" {
 export const theme: DefaultTheme = {
     colors: {
         primaryColor: '#09357B',
-        white: '#ffffff'
+        white: '#ffffff',
+        red: '#F50057',
+        yellow: '#FFCA28',
+        blue: '#2196F3'
     },
     fonts: {
         familyHeading: "'Georgia', serif",

@@ -8,6 +8,11 @@ const SearchBox = dynamic(() => import('@/components/search-box'))
 
 const HeaderWrapper = styled.header`
     background-color: ${({ theme }) => theme.colors.primaryColor};
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1001;
     a {
         color: #ffffff;
         svg {
