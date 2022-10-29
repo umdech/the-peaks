@@ -22,9 +22,12 @@ const Heading = styled.h3`
 const Grid = styled.div`
     display: grid;
     grid-gap: 30px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     margin-bottom: 50px;
     margin-top: 30px;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        grid-template-columns: repeat(3, 1fr);
+    }
 `
 
 const Section = ({ name }: Props) => {

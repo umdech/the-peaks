@@ -7,38 +7,41 @@ import Card from '@/components/card'
 const TopContainer = styled.div`
     display: grid;
     grid-gap: 30px;
-    grid-template-columns: 50% 1fr 1fr;
-    a {
-        &:first-child {
-            grid-row: 1 / 3;
-            .thumbnail {
-                &:before {
-                    padding-top: 75%;
-                }
-            }
-            .title-contains {
-                h3 {
-                    font-size: 24px;
-                    max-height: 101px;
-                }
-            }
-        }
-        &:not(:first-child) {
-            .thumbnail {
-                height: 100%;
-                &:before {
-                    padding-top: 100%;
-                }
-            }
-            .title-contains {
-                min-height: 110px;
-                .title-contains {
-                    h3 {
-                        font-size: 18px;
+    grid-template-columns: 1fr;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        grid-template-columns: 50% 1fr 1fr;
+        a {
+            &:first-child {
+                grid-row: 1 / 3;
+                .thumbnail {
+                    &:before {
+                        padding-top: 75%;
                     }
                 }
-                p {
-                    display: none;
+                .title-contains {
+                    h3 {
+                        font-size: 24px;
+                        max-height: 101px;
+                    }
+                }
+            }
+            &:not(:first-child) {
+                .thumbnail {
+                    height: 100%;
+                    &:before {
+                        padding-top: 100%;
+                    }
+                }
+                .title-contains {
+                    min-height: 110px;
+                    .title-contains {
+                        h3 {
+                            font-size: 18px;
+                        }
+                    }
+                    p {
+                        display: none;
+                    }
                 }
             }
         }
@@ -48,9 +51,12 @@ const TopContainer = styled.div`
 const BottomContainer = styled.div`
     display: grid;
     grid-gap: 30px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     margin-bottom: 50px;
     margin-top: 30px;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        grid-template-columns: repeat(3, 1fr);
+    }
 `
 
 const TopStories = () => {

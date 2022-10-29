@@ -46,10 +46,11 @@ const GlobalStyle = createGlobalStyle`
     }
     .page {
         min-height: 100vh;
-        padding-bottom: calc(240px + 4rem);
-        padding-top: calc(124px + 4rem);
+        padding-bottom: calc(240px + 2rem);
+        padding-top: calc(124px + 2rem);
         position: relative;
         @media ${({ theme }) => theme.breakpoints.md} {
+            padding-bottom: calc(240px + 4rem);
             padding-top: calc(116px + 4rem);
         }
     }

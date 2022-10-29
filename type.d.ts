@@ -48,3 +48,10 @@ type SectionReponse = {
     section: ISection,
     results: IPost[]
 }
+
+type SelectProps = {
+    label: string,
+    value: OrderByProps
+}
+
+type OrderByProps = 'newest' | 'oldest' | 'relevance'

@@ -43,7 +43,7 @@ const TitleContains = styled.div<TitleProps>`
         display: -webkit-box;
         font-size: 14px;
         line-height: 1.3em;
-        margin: 0.5rem 0 0;
+        margin: 0.5rem 0 0.5rem;
         max-height: 2.3rem;
         overflow: hidden;
         -webkit-box-orient: vertical;
@@ -79,11 +79,13 @@ const CardBox = styled(Link) <CardProps>`
 `
 
 const Thumbnail = styled.div`
+    background-color: #0D47A1;
     position: relative;
     &:before {
         content: '';
         display: block;
-        padding-top: ${(15 / 14) * 100}%;
+        // padding-top: ${(15 / 14) * 100}%;
+        padding-top: 100%;
     }
     img {
         display: block;
@@ -93,7 +95,7 @@ const Thumbnail = styled.div`
 const Card: React.FC<Props> = (props) => {
     return (
         <CardBox href={props.item.id} passHref title={props.item.webTitle} section={props.item.sectionId}>
-            {props.item.fields && (
+            {props.item.fields ? (
                 !props.hideThumbnail && (
                     <Thumbnail className="thumbnail">
                         <Image
@@ -107,6 +109,19 @@ const Card: React.FC<Props> = (props) => {
                         />
                     </Thumbnail>
                 )
+            ) : (
+                <Thumbnail className="thumbnail">
+                    <Image
+                        src="/images/blank-thumbnail.png"
+                        alt={props.item.webTitle}
+                        fill
+                        sizes="100vw"
+                        quality={80}
+                        style={{
+                            objectFit: 'contain'
+                        }}
+                    />
+                </Thumbnail>
             )}
             <TitleContains className="title-contains" noThumbnail={props.hideThumbnail}>
                 <h3 dangerouslySetInnerHTML={{ __html: props.item.webTitle }}></h3>
