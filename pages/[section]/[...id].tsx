@@ -2,9 +2,11 @@ import styled from 'styled-components'
 import Layout from '@/components/layouts'
 import { loadPost } from 'libs/loadpost'
 import { lighten, rgba } from 'polished'
+import Error from '@/components/error'
 
 type Props = {
-    post: PostResponse
+    post: PostResponse,
+    error: boolean
 }
 
 const Container = styled.article`
@@ -36,8 +38,8 @@ const Content = styled.div`
         }
     }
     .element {
-        margin: 0 0 1rem;
-        width: 100%;
+        margin: 0 auto 1rem auto;
+        max-width: 100%;
         figcaption {
             color: ${({ theme }) => rgba(theme.colors.textColor, 0.5)};
             font-size: 12px;
@@ -60,8 +62,32 @@ const Content = styled.div`
     }
     .element-image {
         img {
+            display: block;
             height: auto;
-            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+        }
+        &.element--thumbnail {
+            clear: left;
+            float: left;
+            margin-right: 1rem;
+            width: 30%;
+        }
+    }
+    .element-pullquote {
+        background-color: ${({ theme }) => theme.colors.gray};
+        blockquote {
+            margin: 0;
+            padding: 1rem;
+            p {
+                color: ${({ theme }) => theme.colors.primaryColor};
+                font-size: 18px;
+                font-weight: bold;
+                line-height: 1.5em;
+                &:last-child {
+                    margin: 0;
+                }
+            }
         }
     }
     a {
@@ -75,7 +101,14 @@ const Content = styled.div`
     }
 `
 
-const PostDetail = ({ post }: Props) => {
+const PostDetail = ({ post, error }: Props) => {
+    if (error) {
+        return (
+            <Layout title="404: Not Found">
+                <Error />
+            </Layout>
+        )
+    }
     return (
         <Layout title={post.content?.webTitle}>
             <div className="container">
@@ -99,10 +132,15 @@ export const getServerSideProps = async (ctx: any) => {
     const params = {
         'show-fields': 'body,trailText'
     }
+    let error: boolean = false
     const post = await loadPost(id, params)
+    if (post.response.status !== 'ok') {
+        error = true
+    }
     return {
         props: {
-            post: post.response
+            post: post.response,
+            error
         }
     }
 }

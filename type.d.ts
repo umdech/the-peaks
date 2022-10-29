@@ -20,9 +20,31 @@ interface IPost {
     pillarName: string
 }
 
+interface ISection {
+    id: string,
+    webTitle: string,
+    webUrl: string,
+    apiUrl: string,
+    editions?: any
+}
+
 type PostResponse = {
     status: string,
     message?: string,
     userTier?: string,
     content?: IPost
+}
+
+type SectionReponse = {
+    status: string,
+    message?: string,
+    userTier?: string,
+    total?: number,
+    startIndex?: number,
+    pageSize?: number,
+    currentPage?: number,
+    pages?: number,
+    edition?: any,
+    section: ISection,
+    results: IPost[]
 }

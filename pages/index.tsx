@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
-import Link from "next/link";
 
 import Layout from "@/components/layouts";
+import Section from "@/components/section";
 const TopStories = dynamic(() => import('@/components/top-stories'))
 
 
@@ -10,7 +10,11 @@ const Home = () => {
         <Layout>
             <div className="container">
                 <TopStories />
-                <Link href="/page2">Page 2</Link>
+
+                {/* Sections */}
+                <Section name="sport" />
+                <Section name="culture" />
+                <Section name="lifeandstyle" />
             </div>
         </Layout>
     )
