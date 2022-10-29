@@ -3,6 +3,35 @@ import styled from 'styled-components'
 import { useCallback, useEffect, useState } from 'react'
 
 import Card from '@/components/card'
+import Select from '@/components/select'
+import CardPlaceholder from '@/components/card-placeholder'
+
+const HeadingWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+`
+
+const Heading = styled.h2`
+    flex: 0 0 100%;
+    font-size: 38px;
+    line-height: 1em;
+    margin: 0 0 1rem;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex: 0 0 auto;
+        font-size: 48px;
+        margin: 0;
+    }
+`
+
+const ToolWrapper = styled.div`
+    flex: 0 0 100%;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex: 0 0 auto;
+    }
+`
 
 const TopContainer = styled.div`
     display: grid;
@@ -45,6 +74,14 @@ const TopContainer = styled.div`
                 }
             }
         }
+        .card-placeholder {
+            &:before {
+                padding-top: 75%;
+            }
+            &:first-child {
+                grid-row: 1 / 3;
+            }
+        }
     }
 `
 
@@ -61,16 +98,34 @@ const BottomContainer = styled.div`
 
 const TopStories = () => {
     const [loaded, setLoaded] = useState(false)
+    const [reloaded, setReLoaded] = useState(true)
+    const [orderBy, setOrderBy] = useState('newest')
     const [topItems, setTopItems] = useState<IPost[]>([])
     const [bottomItems, setBottomItems] = useState<IPost[]>([])
 
-    const getTopStories = useCallback(
-        async () => {
+    const options: SelectProps[] = [
+        {
+            label: 'Newest first',
+            value: 'newest'
+        },
+        {
+            label: 'Oldest first',
+            value: 'oldest'
+        },
+        {
+            label: 'Most popular',
+            value: 'relevance'
+        }
+    ]
+
+    const getData = useCallback(
+        async (order: string = orderBy) => {
             const params: any = {
                 'api-key': process.env.API_KEY,
                 'section': 'sport|culture|lifeandstyle',
                 'page-size': 8,
-                'show-fields': 'thumbnail,trailText'
+                'show-fields': 'thumbnail,trailText',
+                'order-by': order
             }
             const res = await axios.get(`/api/v1/search`, { params })
             const data: IPost[] = res.data.response.results
@@ -85,8 +140,16 @@ const TopStories = () => {
             })
             setTopItems(the_top)
             setBottomItems(the_bottom)
-            setLoaded(true)
-        }, [setTopItems, setBottomItems, setLoaded]
+        }, [orderBy, setTopItems, setBottomItems]
+    )
+
+    const getTopStories = useCallback(
+        async () => {
+            if (!loaded) {
+                await getData()
+                setLoaded(true)
+            }
+        }, [loaded, getData, setLoaded]
     )
 
     useEffect(
@@ -96,10 +159,25 @@ const TopStories = () => {
             }
         }, [loaded, getTopStories]
     )
+
+    const handleChange = async (val: any) => {
+        if (val !== orderBy) {
+            setOrderBy(val)
+            setReLoaded(false)
+            await getData(val)
+            setReLoaded(true)
+        }
+    }
+
     return (
         <>
-            <h2>Top stories</h2>
-            {loaded ? (
+            <HeadingWrapper>
+                <Heading>Top stories</Heading>
+                <ToolWrapper>
+                    <Select options={options} onChange={(value) => handleChange(value)} value={orderBy} />
+                </ToolWrapper>
+            </HeadingWrapper>
+            {(loaded && reloaded) ? (
                 <>
                     <TopContainer>
                         {topItems.map((item: IPost, key: number) => (
@@ -112,7 +190,22 @@ const TopStories = () => {
                         ))}
                     </BottomContainer>
                 </>
-            ) : <p>Loading...</p>}
+            ) : (
+                <>
+                    <TopContainer>
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                    </TopContainer>
+                    <BottomContainer>
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                        <CardPlaceholder />
+                    </BottomContainer>
+                </>
+            )}
         </>
     )
 }

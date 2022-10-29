@@ -93,18 +93,22 @@ const Thumbnail = styled.div`
 `
 
 const Card: React.FC<Props> = (props) => {
+    const clearPTags = (str: string) => {
+        return str.replace(/(<p[^>]+?>|<p>|<\/p>)/img, "")
+    }
     return (
         <CardBox href={props.item.id} passHref title={props.item.webTitle} section={props.item.sectionId}>
             {props.item.fields ? (
                 !props.hideThumbnail && (
                     <Thumbnail className="thumbnail">
                         <Image
-                            src={props.item.fields?.thumbnail}
+                            src={props.item.fields?.thumbnail || `/images/blank-thumbnail.png`}
                             alt={props.item.webTitle}
                             fill
                             sizes="100vw"
                             style={{
-                                objectFit: 'cover'
+                                objectFit: 'cover',
+                                objectPosition: 'top center'
                             }}
                         />
                     </Thumbnail>
@@ -125,7 +129,7 @@ const Card: React.FC<Props> = (props) => {
             )}
             <TitleContains className="title-contains" noThumbnail={props.hideThumbnail}>
                 <h3 dangerouslySetInnerHTML={{ __html: props.item.webTitle }}></h3>
-                {(props.item.fields) && (props.item.fields.trailText && <p dangerouslySetInnerHTML={{ __html: props.item.fields.trailText }}></p>)}
+                {(props.item.fields) && (props.item.fields.trailText && <p dangerouslySetInnerHTML={{ __html: clearPTags(props.item.fields.trailText) }}></p>)}
             </TitleContains>
         </CardBox>
     )

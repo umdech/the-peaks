@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import Layout from '@/components/layouts'
+
 import { loadPost } from '@/libs/loadpost'
+import Layout from '@/components/layouts'
 import Card from '@/components/card'
-import Error from '@/components/error'
-import SectionFilter from '@/components/section-filters'
+import SearchFilter from '@/components/search-filters'
 
 type Props = {
-    response: SectionReponse,
+    response: SearchResponse,
     error: boolean
 }
 
@@ -16,12 +16,13 @@ const HeadingWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 `
 
-const Heading = styled.h1`
+const Heading = styled.h2`
     flex: 0 0 100%;
-    font-size: 34px;
+    font-size: 38px;
+    line-height: 1em;
     margin: 0 0 1rem;
     @media ${({ theme }) => theme.breakpoints.md} {
         flex: 0 0 auto;
@@ -48,25 +49,16 @@ const Grid = styled.div`
     }
 `
 
-const SectionPage: React.FC<Props> = ({ response, error }) => {
-    if (error) {
-        return (
-            <Layout title="404: Not Found">
-                <Error />
-            </Layout>
-        )
-    }
-    const section: ISection = response.section || []
+const Search: React.FC<Props> = ({ response, error }) => {
     const items: IPost[] = response.results
-
 
     return (
         <Layout>
             <div className="container">
                 <HeadingWrapper>
-                    <Heading dangerouslySetInnerHTML={{ __html: section.webTitle }}></Heading>
+                    <Heading>Search results</Heading>
                     <ToolWrapper>
-                        <SectionFilter />
+                        <SearchFilter />
                     </ToolWrapper>
                 </HeadingWrapper>
                 <Grid>
@@ -80,14 +72,19 @@ const SectionPage: React.FC<Props> = ({ response, error }) => {
 }
 
 export const getServerSideProps = async (ctx: any) => {
-    const { section } = ctx.params
+    const { q } = ctx.query
+    let error: boolean = false
+    if (!q) {
+        error = true
+    }
     const params = {
         'show-fields': 'thumbnail',
+        q,
+        'section': 'sport|culture|lifeandstyle',
         'page-size': 12,
         'order-by': ctx.query['order-by'] || 'newest'
     }
-    let error: boolean = false
-    const res = await loadPost(section, params)
+    const res = await loadPost(`/search`, params)
     if (res.response.status !== 'ok') {
         error = true
     }
@@ -99,4 +96,4 @@ export const getServerSideProps = async (ctx: any) => {
     }
 }
 
-export default SectionPage
+export default Search

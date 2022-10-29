@@ -44,8 +44,22 @@ type SectionReponse = {
     pageSize?: number,
     currentPage?: number,
     pages?: number,
+    orderBy?: string,
     edition?: any,
     section: ISection,
+    results: IPost[]
+}
+
+type SearchResponse = {
+    status: string,
+    message?: string,
+    userTier?: string,
+    total?: number,
+    startIndex?: number,
+    pageSize?: number,
+    currentPage?: number,
+    pages?: number,
+    orderBy?: string,
     results: IPost[]
 }
 

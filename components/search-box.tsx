@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { lighten } from 'polished'
-import React, { useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const Icon = dynamic(() => import('@/components/icon'))
@@ -12,10 +13,6 @@ type SearchProps = {
 
 const BoxContains = styled.div<SearchProps>`
     background-color: ${({ opened, theme }) => opened ? lighten(0.12, theme.colors.primaryColor) : theme.colors.primaryColor};
-    display: flex;
-    flex-wrap: nowrap;
-    height: 2.75rem;
-    justify-content: flex-end;
     width: 100%;
     transition: all .15s ease-in-out;
     @media ${({ theme }) => theme.breakpoints.md} {
@@ -24,6 +21,14 @@ const BoxContains = styled.div<SearchProps>`
             background-color: ${({ theme }) => lighten(0.12, theme.colors.primaryColor)};
         }
     }
+`
+
+const Form = styled.form`
+    display: flex;
+    flex-wrap: nowrap;
+    height: 2.75rem;
+    justify-content: flex-end;
+    width: 100%;
 `
 
 const SearchBtn = styled.button`
@@ -68,13 +73,14 @@ const SearchInput = styled.input<SearchProps>`
 `
 
 const SearchBox = () => {
+    const router = useRouter()
     const searchRef: React.RefObject<HTMLDivElement> = React.createRef()
     const inputRef: React.RefObject<HTMLInputElement> = React.createRef()
-    const [keyword, setKeyword] = useState('')
+    const [q, setKeyword] = useState('')
     const [opened, setOpen] = useState(false)
 
     const closeSearchBox = () => {
-        if (!keyword) {
+        if (!q) {
             setOpen(false)
         }
     }
@@ -112,6 +118,13 @@ const SearchBox = () => {
         }
     }
 
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault()
+        if (q) {
+            router.push({ pathname: '/search', query: { q } })
+        }
+    }
+
     useEffect(
         () => {
             document.addEventListener('mousedown', handleClickOutside, false)
@@ -125,19 +138,22 @@ const SearchBox = () => {
 
     return (
         <BoxContains opened={opened} ref={searchRef}>
-            <SearchInput
-                type="search"
-                placeholder="Search all news"
-                value={keyword}
-                onChange={handleInput}
-                opened={opened}
-                autoComplete="off"
-                ref={inputRef} />
-            <SearchBtn type="button" onClick={handleClick} tabIndex={-1}>
-                <Icon width={17} height={17}>
-                    <Magnifier />
-                </Icon>
-            </SearchBtn>
+            <Form onSubmit={handleSubmit}>
+                <SearchInput
+                    type="search"
+                    name="q"
+                    placeholder="Search all news"
+                    value={q}
+                    onChange={handleInput}
+                    opened={opened}
+                    autoComplete="off"
+                    ref={inputRef} />
+                <SearchBtn type="button" onClick={handleClick} tabIndex={-1}>
+                    <Icon width={17} height={17}>
+                        <Magnifier />
+                    </Icon>
+                </SearchBtn>
+            </Form>
         </BoxContains>
     )
 }
