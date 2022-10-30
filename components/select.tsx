@@ -17,6 +17,12 @@ type SelectedProps = {
 const selectHeight = 45;
 
 const SelectWrapper = styled.div`
+    flex: 0 0 55%;
+    padding-left: 0.5rem;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex: 0 0 auto;
+        padding-left: 0;
+    }
     select {
         display: none;
     }
@@ -24,7 +30,6 @@ const SelectWrapper = styled.div`
 
 const SelectContains = styled.div<MenuProps>`
     font-size: 16px;
-    min-width: 225px;
     position: relative;
     width: 100%;
     &:after {
@@ -42,6 +47,10 @@ const SelectContains = styled.div<MenuProps>`
         user-select: none;
         width: 0;
         z-index: 999;
+    }
+    @media ${({ theme }) => theme.breakpoints.md} {
+        min-width: 225px;
+        width: 100%;
     }
 `
 

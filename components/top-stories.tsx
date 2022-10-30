@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Card from '@/components/card'
 import Select from '@/components/select'
 import CardPlaceholder from '@/components/card-placeholder'
+import BookmarksLink from './bookmarks-link'
 
 const HeadingWrapper = styled.div`
     align-items: center;
@@ -27,7 +28,10 @@ const Heading = styled.h2`
 `
 
 const ToolWrapper = styled.div`
+    align-items: center;
+    display: flex;
     flex: 0 0 100%;
+    flex-wrap: wrap;
     @media ${({ theme }) => theme.breakpoints.md} {
         flex: 0 0 auto;
     }
@@ -174,6 +178,7 @@ const TopStories = () => {
             <HeadingWrapper>
                 <Heading>Top stories</Heading>
                 <ToolWrapper>
+                    <BookmarksLink />
                     <Select options={options} onChange={(value) => handleChange(value)} value={orderBy} />
                 </ToolWrapper>
             </HeadingWrapper>

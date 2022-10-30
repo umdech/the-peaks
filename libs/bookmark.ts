@@ -7,8 +7,13 @@ const option = {
     maxAge: 12 * 30 * 24 * 60 * 60
 }
 
-export const getAllBookmarks = () => {
-    const ids: any = getCookie(cookie_name)
+export const getAllBookmarks = (req?: any, res?: any) => {
+    let ids: any
+    if (req && res) {
+        ids = getCookie(cookie_name, { req, res })
+    } else {
+        ids = getCookie(cookie_name)
+    }
     try {
         return JSON.parse(ids)
     } catch {

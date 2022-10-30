@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { loadPost } from '@/libs/loadpost'
 import Layout from '@/components/layouts'
 import Card from '@/components/card'
-import SearchFilter from '@/components/search-filters'
+import BookmarkFilter from '@/components/bookmark-filter'
 import Error from '@/components/error'
-import BookmarksLink from '@/components/bookmarks-link'
+import { getAllBookmarks } from '@/libs/bookmark'
 
 type Props = {
     response: SearchResponse,
@@ -34,10 +34,7 @@ const Heading = styled.h2`
 `
 
 const ToolWrapper = styled.div`
-    align-items: center;
-    display: flex;
     flex: 0 0 100%;
-    flex-wrap: wrap;
     @media ${({ theme }) => theme.breakpoints.md} {
         flex: 0 0 auto;
     }
@@ -54,7 +51,7 @@ const Grid = styled.div`
     }
 `
 
-const Search: React.FC<Props> = ({ response, error }) => {
+const Bookmarks: React.FC<Props> = ({ response, error }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -69,11 +66,12 @@ const Search: React.FC<Props> = ({ response, error }) => {
         <Layout>
             <div className="container">
                 <HeadingWrapper>
-                    <Heading>Search results</Heading>
-                    <ToolWrapper>
-                        <BookmarksLink />
-                        {(items.length > 0) && <SearchFilter />}
-                    </ToolWrapper>
+                    <Heading>All bookmark</Heading>
+                    {(items.length > 0) && (
+                        <ToolWrapper>
+                            <BookmarkFilter />
+                        </ToolWrapper>
+                    )}
                 </HeadingWrapper>
                 {(items.length > 0) ? (
                     <Grid>
@@ -81,21 +79,22 @@ const Search: React.FC<Props> = ({ response, error }) => {
                             <Card item={item} key={item.id} />
                         ))}
                     </Grid>
-                ) : (<h4>Sorry, we couldn&lsquo;t find any result</h4>)}
+                ) : (<h4>No bookmarks yet!</h4>)}
             </div>
         </Layout>
     )
 }
 
 export const getServerSideProps = async (ctx: any) => {
-    const { q } = ctx.query
-    let error: boolean = false
-    if (!q) {
-        error = true
+    const bookmarks = await getAllBookmarks(ctx.req, ctx.res)
+    let ids = ''
+    if (bookmarks.length) {
+        ids = bookmarks.join(',')
     }
+    let error: boolean = false
     const params = {
         'show-fields': 'thumbnail',
-        q,
+        ids,
         'section': 'sport|culture|lifeandstyle',
         'page-size': 12,
         'order-by': ctx.query['order-by'] || 'newest'
@@ -112,4 +111,4 @@ export const getServerSideProps = async (ctx: any) => {
     }
 }
 
-export default Search
+export default Bookmarks

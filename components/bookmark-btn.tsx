@@ -122,7 +122,7 @@ const BookmarkBtn = ({ id }: Props) => {
                 }
                 dispatch(setBookmarks(getAllBookmarks()))
             }
-        }, [bookmarks, dispatch, setBookmarks, getAllBookmarks]
+        }, [bookmarks, dispatch]
     )
     return (
         <>

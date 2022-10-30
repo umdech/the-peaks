@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
     }
     h1, h2, h3, h4 {
         font-family: ${({ theme }) => theme.fonts.familyHeading};
+        line-height: 1.2em;
         margin-top: 0;
     }
     h1 {
@@ -28,6 +29,9 @@ const GlobalStyle = createGlobalStyle`
     }
     h2 {
         font-size: 48px;
+    }
+    h4 {
+        font-size: 28px;
     }
     a {
         text-decoration: none !important;
