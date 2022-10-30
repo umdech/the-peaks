@@ -3,27 +3,46 @@ import Layout from '@/components/layouts'
 import { loadPost } from 'libs/loadpost'
 import { lighten, rgba } from 'polished'
 import Error from '@/components/error'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import BookmarkBtn from '@/components/bookmark-btn'
+
+dayjs.extend(timezone)
+dayjs.extend(utc)
 
 type Props = {
     post: PostResponse,
     error: boolean
 }
 
+const HeadContains = styled.div`
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+    letter-spacing: 0.01em;
+    margin-bottom: 1rem;
+    width: 100%;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        width: 60%;
+    }
+`
+
 const Container = styled.article`
     display: flex;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex-direction: row;
+    }
 `
 
 const PostContent = styled.div`
-    flex: 0 0 60%;
+    flex: 0 0 100%;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex: 0 0 60%;
+    }
 `
 
-const PostMedia = styled.aside`
-    flex: 0 0 40%;
-`
-
-const TrailText = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
-    margin: 1rem 0;
+const Headline = styled.div`
     h3 {
         font-size: 20px;
         line-height: 1.4em;
@@ -43,6 +62,8 @@ const Content = styled.div`
         figcaption {
             color: ${({ theme }) => rgba(theme.colors.textColor, 0.5)};
             font-size: 12px;
+            line-height: 1.2em;
+            margin-top: 0.5rem;
         }
     }
     .element-video {
@@ -101,6 +122,28 @@ const Content = styled.div`
     }
 `
 
+const PostMedia = styled.aside`
+    flex: 0 0 100%;
+    @media ${({ theme }) => theme.breakpoints.md} {
+        flex: 0 0 40%;
+        padding-left: 2rem;
+    }
+    ${Content} {
+        @media ${({ theme }) => theme.breakpoints.md} {
+            position: sticky;
+            top: calc(116px + 4rem);
+        }
+    }
+`
+
+const PublishedDate = styled.span`
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+`
+
 const PostDetail = ({ post, error }: Props) => {
     if (error) {
         return (
@@ -109,18 +152,29 @@ const PostDetail = ({ post, error }: Props) => {
             </Layout>
         )
     }
+    const dateFormat = (str: string) => {
+        return dayjs(str, 'YYYY-MM-DDTHH:mm:ssZ[Z]').tz('GMT+0').format("ddd D MMM YYYY HH.mm BST")
+    }
     return (
         <Layout title={post.content?.webTitle}>
             <div className="container">
                 {(post.content) && (
-                    <Container>
-                        <PostContent>
+                    <>
+                        <HeadContains>
+                            <BookmarkBtn id={post.content.id} />
+                            <PublishedDate dangerouslySetInnerHTML={{ __html: dateFormat(post.content.webPublicationDate) }}></PublishedDate>
                             <h1 dangerouslySetInnerHTML={{ __html: post.content?.webTitle }}></h1>
-                            {post.content.fields && <TrailText><h3 dangerouslySetInnerHTML={{ __html: post.content.fields?.trailText }}></h3></TrailText>}
-                            {post.content.fields && <Content dangerouslySetInnerHTML={{ __html: post.content.fields?.body }}></Content>}
-                        </PostContent>
-                        <PostMedia>sss</PostMedia>
-                    </Container>
+                            {post.content.fields?.headline && <Headline><h3 dangerouslySetInnerHTML={{ __html: post.content.fields?.headline }}></h3></Headline>}
+                        </HeadContains>
+                        <Container>
+                            <PostContent>
+                                {post.content.fields?.body && <Content dangerouslySetInnerHTML={{ __html: post.content.fields?.body }}></Content>}
+                            </PostContent>
+                            <PostMedia>
+                                {post.content.fields?.main && <Content dangerouslySetInnerHTML={{ __html: post.content.fields?.main }}></Content>}
+                            </PostMedia>
+                        </Container>
+                    </>
                 )}
             </div>
         </Layout>
@@ -130,7 +184,7 @@ const PostDetail = ({ post, error }: Props) => {
 export const getServerSideProps = async (ctx: any) => {
     const id = ctx.resolvedUrl
     const params = {
-        'show-fields': 'body,trailText'
+        'show-fields': 'body,headline,main'
     }
     let error: boolean = false
     const post = await loadPost(id, params)

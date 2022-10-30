@@ -20,8 +20,11 @@ const GlobalStyle = createGlobalStyle`
         margin-top: 0;
     }
     h1 {
-        font-size: 34px;
+        font-size: 30px;
         line-height: 1.2em;
+        @media ${({ theme }) => theme.breakpoints.md} {
+            font-size: 34px;
+        }
     }
     h2 {
         font-size: 48px;

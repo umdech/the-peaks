@@ -2,7 +2,8 @@ type FieldProps = {
     thumbnail: string,
     trailText: string,
     body: string,
-    main
+    headline: string,
+    main: string
 }
 
 interface IPost {
@@ -26,6 +27,10 @@ interface ISection {
     webUrl: string,
     apiUrl: string,
     editions?: any
+}
+
+interface IBookmark {
+    ids: string
 }
 
 type PostResponse = {
@@ -69,3 +74,14 @@ type SelectProps = {
 }
 
 type OrderByProps = 'newest' | 'oldest' | 'relevance'
+
+type BookmarkAction = {
+    type: string,
+    id: string
+}
+
+type BookmarkState = {
+    items: any
+}
+
+type BookmarkDispatchType = (args: BookmarkAction) => BookmarkAction
