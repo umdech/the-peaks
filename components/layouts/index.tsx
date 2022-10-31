@@ -15,7 +15,7 @@ const Layout = ({ title, children, description }: Props) => {
     const router = useRouter()
     const the_title: string = `The Peaks${title ? ` - ${title}` : ``}`
     const the_description: string = description || `Breaking news, sport, culture, lifestyle, and a whole lot more. The Peaks.`
-    const canonical = `${process.env.NEXT_PUBLIC_BASE_URL}${router.asPath}`
+    const canonical = `${process.env.NEXT_PUBLIC_BASE_URL}${router ? router.asPath : ''}`
 
     const stripHtml = (str: string) => (
         str.replace(/(<([^>]+)>)/gi, '')
