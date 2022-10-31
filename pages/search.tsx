@@ -7,10 +7,12 @@ import Card from '@/components/card'
 import SearchFilter from '@/components/search-filters'
 import Error from '@/components/error'
 import BookmarksLink from '@/components/bookmarks-link'
+import Pagination from '@/components/pagination'
 
 type Props = {
     response: SearchResponse,
-    error: boolean
+    error: boolean,
+    url: string
 }
 
 const HeadingWrapper = styled.div`
@@ -54,7 +56,7 @@ const Grid = styled.div`
     }
 `
 
-const Search: React.FC<Props> = ({ response, error }) => {
+const Search: React.FC<Props> = ({ response, error, url }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -82,13 +84,14 @@ const Search: React.FC<Props> = ({ response, error }) => {
                         ))}
                     </Grid>
                 ) : (<h4>Sorry, we couldn&lsquo;t find any result</h4>)}
+                {(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )
 }
 
 export const getServerSideProps = async (ctx: any) => {
-    const { q } = ctx.query
+    const { q, page } = ctx.query
     let error: boolean = false
     if (!q) {
         error = true
@@ -96,8 +99,9 @@ export const getServerSideProps = async (ctx: any) => {
     const params = {
         'show-fields': 'thumbnail',
         q,
+        page: page || 1,
         'section': 'sport|culture|lifeandstyle',
-        'page-size': 12,
+        'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
     }
     const res = await loadPost(`/search`, params)
@@ -107,7 +111,8 @@ export const getServerSideProps = async (ctx: any) => {
     return {
         props: {
             response: res.response,
-            error
+            error,
+            url: ctx.resolvedUrl
         }
     }
 }

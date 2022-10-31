@@ -5,10 +5,12 @@ import { loadPost } from '@/libs/loadpost'
 import Card from '@/components/card'
 import Error from '@/components/error'
 import SectionFilter from '@/components/section-filters'
+import Pagination from '@/components/pagination'
 
 type Props = {
     response: SectionReponse,
-    error: boolean
+    error: boolean,
+    url: string
 }
 
 const HeadingWrapper = styled.div`
@@ -48,7 +50,7 @@ const Grid = styled.div`
     }
 `
 
-const SectionPage: React.FC<Props> = ({ response, error }) => {
+const SectionPage: React.FC<Props> = ({ response, error, url }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -74,6 +76,7 @@ const SectionPage: React.FC<Props> = ({ response, error }) => {
                         <Card item={item} key={item.id} />
                     ))}
                 </Grid>
+                {(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )
@@ -81,9 +84,11 @@ const SectionPage: React.FC<Props> = ({ response, error }) => {
 
 export const getServerSideProps = async (ctx: any) => {
     const { section } = ctx.params
+    const { page } = ctx.query
     const params = {
         'show-fields': 'thumbnail',
-        'page-size': 12,
+        page: page || 1,
+        'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
     }
     let error: boolean = false
@@ -94,7 +99,8 @@ export const getServerSideProps = async (ctx: any) => {
     return {
         props: {
             response: res.response,
-            error
+            error,
+            url: ctx.resolvedUrl
         }
     }
 }

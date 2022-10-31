@@ -7,10 +7,12 @@ import Card from '@/components/card'
 import BookmarkFilter from '@/components/bookmark-filter'
 import Error from '@/components/error'
 import { getAllBookmarks } from '@/libs/bookmark'
+import Pagination from '@/components/pagination'
 
 type Props = {
     response: SearchResponse,
-    error: boolean
+    error: ConstrainBooleanParameters,
+    url: string
 }
 
 const HeadingWrapper = styled.div`
@@ -51,7 +53,7 @@ const Grid = styled.div`
     }
 `
 
-const Bookmarks: React.FC<Props> = ({ response, error }) => {
+const Bookmarks: React.FC<Props> = ({ response, error, url }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -80,6 +82,7 @@ const Bookmarks: React.FC<Props> = ({ response, error }) => {
                         ))}
                     </Grid>
                 ) : (<h4>No bookmarks yet!</h4>)}
+                {(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )
@@ -91,12 +94,14 @@ export const getServerSideProps = async (ctx: any) => {
     if (bookmarks.length) {
         ids = bookmarks.join(',')
     }
+    const { page } = ctx.query
     let error: boolean = false
     const params = {
         'show-fields': 'thumbnail',
         ids,
         'section': 'sport|culture|lifeandstyle',
-        'page-size': 12,
+        page: page || 1,
+        'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
     }
     const res = await loadPost(`/search`, params)
@@ -106,7 +111,8 @@ export const getServerSideProps = async (ctx: any) => {
     return {
         props: {
             response: res.response,
-            error
+            error,
+            url: ctx.resolvedUrl
         }
     }
 }

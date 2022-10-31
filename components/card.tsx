@@ -110,6 +110,7 @@ const Card: React.FC<Props> = (props) => {
                                 objectFit: 'cover',
                                 objectPosition: 'top center'
                             }}
+                            {...(!props.item.fields?.thumbnail ? { priority: true } : {})}
                         />
                     </Thumbnail>
                 )
@@ -124,6 +125,7 @@ const Card: React.FC<Props> = (props) => {
                         style={{
                             objectFit: 'contain'
                         }}
+                        priority
                     />
                 </Thumbnail>
             )}

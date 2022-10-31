@@ -83,10 +83,12 @@ const BookmarkBtn = ({ id }: Props) => {
     const [isToastOpened, setIsToastOpened] = useState(false)
     const [msg, setMsg] = useState<ToastType>('')
     const [animated, setAnimated] = useState(false)
+    const [disabled, setDisabled] = useState(false)
 
     const handleBookmark = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         let msg: ToastType
+        setDisabled(true)
         if (!isBookmark) {
             dispatch(addBookmark(id))
             addToBookmark(id)
@@ -103,6 +105,7 @@ const BookmarkBtn = ({ id }: Props) => {
         }, 100)
         setTimeout(() => {
             deleteToast()
+            setDisabled(false)
         }, 2500)
     }
 
@@ -126,7 +129,7 @@ const BookmarkBtn = ({ id }: Props) => {
     )
     return (
         <>
-            <Button type="button" onClick={handleBookmark}>
+            <Button type="button" onClick={handleBookmark} disabled={disabled}>
                 <Icon width={14} height={14}>
                     <Bookmark />
                 </Icon>

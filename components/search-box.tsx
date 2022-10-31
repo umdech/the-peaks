@@ -89,6 +89,9 @@ const SearchBox = () => {
         e.preventDefault()
         if (opened) {
             closeSearchBox()
+            if (q) {
+                handleSubmit()
+            }
         } else {
             setOpen(true)
             const cur = inputRef.current
@@ -118,8 +121,8 @@ const SearchBox = () => {
         }
     }
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault()
+    const handleSubmit = (e?: FormEvent) => {
+        e && e.preventDefault()
         if (q) {
             router.push({ pathname: '/search', query: { q } })
         }
@@ -148,7 +151,7 @@ const SearchBox = () => {
                     opened={opened}
                     autoComplete="off"
                     ref={inputRef} />
-                <SearchBtn type="button" onClick={handleClick} tabIndex={-1}>
+                <SearchBtn type="button" onClick={handleClick} tabIndex={-1} aria-label="Search">
                     <Icon width={17} height={17}>
                         <Magnifier />
                     </Icon>

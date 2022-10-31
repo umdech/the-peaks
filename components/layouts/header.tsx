@@ -58,7 +58,7 @@ const Header = () => {
             <div className="container">
                 <HeaderContains>
                     <LogoContains>
-                        <Link href="/">
+                        <Link href="/" aria-label="The Peaks">
                             <Icon viewBox="0 0 142 56" width={142} height={56}>
                                 <Logo />
                             </Icon>
