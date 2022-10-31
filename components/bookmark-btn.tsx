@@ -60,6 +60,8 @@ const Toast = styled.div<ToastProps>`
     justify-content: center;
     left: 0;
     padding: 0.4rem 0;
+    padding-bottom: 0.4rem;
+    padding-bottom: calc(0.4rem + env(safe-area-inset-bottom));
     position: fixed;
     right: 0;
     text-align: center;

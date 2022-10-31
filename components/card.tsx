@@ -56,6 +56,8 @@ const CardBox = styled(Link) <CardProps>`
     border-bottom-style: solid;
     border-color: ${({ section, theme }) => {
         switch (section) {
+            case 'news':
+                return theme.colors.green
             case 'sport':
                 return theme.colors.red
             case 'lifeandstyle':
@@ -105,7 +107,7 @@ const Card: React.FC<Props> = (props) => {
                             src={props.item.fields?.thumbnail || `/images/blank-thumbnail.png`}
                             alt={props.item.webTitle}
                             fill
-                            sizes="100vw"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             style={{
                                 objectFit: 'cover',
                                 objectPosition: 'top center'
@@ -120,7 +122,7 @@ const Card: React.FC<Props> = (props) => {
                         src="/images/blank-thumbnail.png"
                         alt={props.item.webTitle}
                         fill
-                        sizes="100vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         quality={80}
                         style={{
                             objectFit: 'contain'

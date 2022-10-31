@@ -2,15 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import Layout from '@/components/layouts'
 import { loadPost } from '@/libs/loadpost'
-import Card from '@/components/card'
 import Error from '@/components/error'
 import SectionFilter from '@/components/section-filters'
-import Pagination from '@/components/pagination'
+import PostLoader from '@/components/posts-loader'
 
 type Props = {
     response: SectionReponse,
     error: boolean,
-    url: string
+    hasMore: boolean
 }
 
 const HeadingWrapper = styled.div`
@@ -39,18 +38,7 @@ const ToolWrapper = styled.div`
     }
 `
 
-const Grid = styled.div`
-    display: grid;
-    grid-gap: 30px;
-    grid-template-columns: 1fr;
-    margin-bottom: 50px;
-    margin-top: 30px;
-    @media ${({ theme }) => theme.breakpoints.md} {
-        grid-template-columns: repeat(3, 1fr);
-    }
-`
-
-const SectionPage: React.FC<Props> = ({ response, error, url }) => {
+const SectionPage: React.FC<Props> = ({ response, error, hasMore }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -63,7 +51,7 @@ const SectionPage: React.FC<Props> = ({ response, error, url }) => {
 
 
     return (
-        <Layout>
+        <Layout title={section.webTitle}>
             <div className="container">
                 <HeadingWrapper>
                     <Heading dangerouslySetInnerHTML={{ __html: section.webTitle }}></Heading>
@@ -71,12 +59,7 @@ const SectionPage: React.FC<Props> = ({ response, error, url }) => {
                         <SectionFilter />
                     </ToolWrapper>
                 </HeadingWrapper>
-                <Grid>
-                    {items.map((item: IPost) => (
-                        <Card item={item} key={item.id} />
-                    ))}
-                </Grid>
-                {!!(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
+                <PostLoader items={items} apiPath={`/api/v1/${section.id}`} hasMore={hasMore} />
             </div>
         </Layout>
     )
@@ -86,7 +69,7 @@ export const getServerSideProps = async (ctx: any) => {
     const { section } = ctx.params
     const { page } = ctx.query
     const params = {
-        'show-fields': 'thumbnail',
+        'show-fields': 'thumbnail,trailText',
         page: page || 1,
         'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
@@ -96,11 +79,16 @@ export const getServerSideProps = async (ctx: any) => {
     if (res.response.status !== 'ok') {
         error = true
     }
+    let hasMore: boolean = true
+    const maxPage: number = process.env.MAX_PAGE ? parseInt(process.env.MAX_PAGE) : res.response.pages
+    if ((res.response.currentPage >= res.response.pages) || (res.response.currentPage >= maxPage)) {
+        hasMore = false
+    }
     return {
         props: {
             response: res.response,
             error,
-            url: ctx.resolvedUrl
+            hasMore
         }
     }
 }

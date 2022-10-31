@@ -3,16 +3,16 @@ import styled from 'styled-components'
 
 import { loadPost } from '@/libs/loadpost'
 import Layout from '@/components/layouts'
-import Card from '@/components/card'
 import BookmarkFilter from '@/components/bookmark-filter'
 import Error from '@/components/error'
 import { getAllBookmarks } from '@/libs/bookmark'
-import Pagination from '@/components/pagination'
+import PostLoader from '@/components/posts-loader'
 
 type Props = {
     response: SearchResponse,
     error: ConstrainBooleanParameters,
-    url: string
+    ids: string,
+    hasMore: boolean
 }
 
 const HeadingWrapper = styled.div`
@@ -23,7 +23,7 @@ const HeadingWrapper = styled.div`
     margin-bottom: 2rem;
 `
 
-const Heading = styled.h2`
+const Heading = styled.h1`
     flex: 0 0 100%;
     font-size: 38px;
     line-height: 1em;
@@ -53,7 +53,7 @@ const Grid = styled.div`
     }
 `
 
-const Bookmarks: React.FC<Props> = ({ response, error, url }) => {
+const Bookmarks: React.FC<Props> = ({ response, error, ids, hasMore }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -65,7 +65,7 @@ const Bookmarks: React.FC<Props> = ({ response, error, url }) => {
     const items: IPost[] = response.results
 
     return (
-        <Layout>
+        <Layout title="Bookmarks">
             <div className="container">
                 <HeadingWrapper>
                     <Heading>All bookmark</Heading>
@@ -76,13 +76,8 @@ const Bookmarks: React.FC<Props> = ({ response, error, url }) => {
                     )}
                 </HeadingWrapper>
                 {(items.length > 0) ? (
-                    <Grid>
-                        {items.map((item: IPost) => (
-                            <Card item={item} key={item.id} />
-                        ))}
-                    </Grid>
+                    <PostLoader items={items} apiPath={`/api/v1/search`} params={{ ids, 'section': 'news|sport|culture|lifeandstyle' }} hasMore={hasMore} />
                 ) : (<h4>No bookmarks yet!</h4>)}
-                {!!(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )
@@ -97,9 +92,9 @@ export const getServerSideProps = async (ctx: any) => {
     const { page } = ctx.query
     let error: boolean = false
     const params = {
-        'show-fields': 'thumbnail',
+        'show-fields': 'thumbnail,trailText',
         ids,
-        'section': 'sport|culture|lifeandstyle',
+        'section': 'news|sport|culture|lifeandstyle',
         page: page || 1,
         'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
@@ -108,11 +103,17 @@ export const getServerSideProps = async (ctx: any) => {
     if (res.response.status !== 'ok') {
         error = true
     }
+    let hasMore: boolean = true
+    const maxPage: number = process.env.MAX_PAGE ? parseInt(process.env.MAX_PAGE) : res.response.pages
+    if ((res.response.currentPage >= res.response.pages) || (res.response.currentPage >= maxPage)) {
+        hasMore = false
+    }
     return {
         props: {
             response: res.response,
             error,
-            url: ctx.resolvedUrl
+            ids,
+            hasMore
         }
     }
 }

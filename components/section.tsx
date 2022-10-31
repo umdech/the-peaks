@@ -40,7 +40,7 @@ const Section = ({ name }: Props) => {
             const params: any = {
                 'api-key': process.env.API_KEY,
                 'page-size': 3,
-                'show-fields': 'thumbnail'
+                'show-fields': 'thumbnail,trailText'
             }
             const res = await axios.get(`/api/v1/${name}`, { params })
             const data: IPost[] = res.data.response.results

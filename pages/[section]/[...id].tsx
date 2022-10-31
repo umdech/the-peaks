@@ -156,7 +156,7 @@ const PostDetail = ({ post, error }: Props) => {
         return dayjs(str, 'YYYY-MM-DDTHH:mm:ssZ[Z]').tz('GMT+0').format("ddd D MMM YYYY HH.mm BST")
     }
     return (
-        <Layout title={post.content?.webTitle}>
+        <Layout title={post.content?.webTitle} description={post.content?.fields?.trailText}>
             <div className="container">
                 {(post.content) && (
                     <>
@@ -184,7 +184,7 @@ const PostDetail = ({ post, error }: Props) => {
 export const getServerSideProps = async (ctx: any) => {
     const id = ctx.resolvedUrl
     const params = {
-        'show-fields': 'body,headline,main'
+        'show-fields': 'body,headline,main,trailText'
     }
     let error: boolean = false
     const post = await loadPost(id, params)

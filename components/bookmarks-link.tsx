@@ -36,7 +36,7 @@ const Button = styled(Link)`
     }
     @media ${({ theme }) => theme.breakpoints.md} {
         flex: 0 0 auto;
-        margin-right: 1.5rem;
+        margin-right: 30px;
         width: auto;
     }
 `

@@ -3,16 +3,16 @@ import styled from 'styled-components'
 
 import { loadPost } from '@/libs/loadpost'
 import Layout from '@/components/layouts'
-import Card from '@/components/card'
 import SearchFilter from '@/components/search-filters'
 import Error from '@/components/error'
 import BookmarksLink from '@/components/bookmarks-link'
-import Pagination from '@/components/pagination'
+import PostLoader from '@/components/posts-loader'
 
 type Props = {
     response: SearchResponse,
     error: boolean,
-    url: string
+    hasMore: boolean,
+    q: string
 }
 
 const HeadingWrapper = styled.div`
@@ -56,7 +56,7 @@ const Grid = styled.div`
     }
 `
 
-const Search: React.FC<Props> = ({ response, error, url }) => {
+const Search: React.FC<Props> = ({ response, error, q, hasMore }) => {
     if (error) {
         return (
             <Layout title="404: Not Found">
@@ -68,7 +68,7 @@ const Search: React.FC<Props> = ({ response, error, url }) => {
     const items: IPost[] = response.results
 
     return (
-        <Layout>
+        <Layout title="Search results">
             <div className="container">
                 <HeadingWrapper>
                     <Heading>Search results</Heading>
@@ -78,13 +78,8 @@ const Search: React.FC<Props> = ({ response, error, url }) => {
                     </ToolWrapper>
                 </HeadingWrapper>
                 {(items.length > 0) ? (
-                    <Grid>
-                        {items.map((item: IPost) => (
-                            <Card item={item} key={item.id} />
-                        ))}
-                    </Grid>
+                    <PostLoader items={items} apiPath={`/api/v1/search`} params={{ q, 'section': 'news|sport|culture|lifeandstyle' }} hasMore={hasMore} />
                 ) : (<h4>Sorry, we couldn&lsquo;t find any result</h4>)}
-                {!!(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )
@@ -97,10 +92,10 @@ export const getServerSideProps = async (ctx: any) => {
         error = true
     }
     const params = {
-        'show-fields': 'thumbnail',
+        'show-fields': 'thumbnail,trailText',
         q,
         page: page || 1,
-        'section': 'sport|culture|lifeandstyle',
+        'section': 'news|sport|culture|lifeandstyle',
         'page-size': process.env.PAGE_SIZE,
         'order-by': ctx.query['order-by'] || 'newest'
     }
@@ -108,11 +103,17 @@ export const getServerSideProps = async (ctx: any) => {
     if (res.response.status !== 'ok') {
         error = true
     }
+    let hasMore: boolean = true
+    const maxPage: number = process.env.MAX_PAGE ? parseInt(process.env.MAX_PAGE) : res.response.pages
+    if ((res.response.currentPage >= res.response.pages) || (res.response.currentPage >= maxPage)) {
+        hasMore = false
+    }
     return {
         props: {
             response: res.response,
             error,
-            url: ctx.resolvedUrl
+            hasMore,
+            q
         }
     }
 }

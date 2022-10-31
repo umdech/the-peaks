@@ -49,7 +49,7 @@ const SelectContains = styled.div<MenuProps>`
         z-index: 999;
     }
     @media ${({ theme }) => theme.breakpoints.md} {
-        min-width: 225px;
+        min-width: 252.5px;
         width: 100%;
     }
 `

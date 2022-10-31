@@ -125,8 +125,7 @@ const TopStories = () => {
     const getData = useCallback(
         async (order: string = orderBy) => {
             const params: any = {
-                'api-key': process.env.API_KEY,
-                'section': 'sport|culture|lifeandstyle',
+                'section': 'news',
                 'page-size': 8,
                 'show-fields': 'thumbnail,trailText',
                 'order-by': order

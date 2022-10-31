@@ -76,8 +76,8 @@ const SearchBox = () => {
     const router = useRouter()
     const searchRef: React.RefObject<HTMLDivElement> = React.createRef()
     const inputRef: React.RefObject<HTMLInputElement> = React.createRef()
-    const [q, setKeyword] = useState('')
-    const [opened, setOpen] = useState(false)
+    const [q, setKeyword] = useState(router.query.q || '')
+    const [opened, setOpen] = useState(!!router.query.q)
 
     const closeSearchBox = () => {
         if (!q) {

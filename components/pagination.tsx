@@ -84,7 +84,7 @@ const Pagination: React.FC<Props> = ({ currentPage, totalPages, url }) => {
         return <></>
     }
     const range: number = 3
-    totalPages = (totalPages >= 1583) ? 1583 : totalPages
+    totalPages = (totalPages >= 2533) ? 2533 : totalPages
     let maxPageLimit: number = currentPage + range
     if (maxPageLimit <= 7) {
         maxPageLimit = 7
