@@ -84,7 +84,7 @@ const Search: React.FC<Props> = ({ response, error, url }) => {
                         ))}
                     </Grid>
                 ) : (<h4>Sorry, we couldn&lsquo;t find any result</h4>)}
-                {(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
+                {!!(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )

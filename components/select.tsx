@@ -59,6 +59,7 @@ const SelectedFiled = styled.button`
     background-color: ${({ theme }) => theme.colors.white};
     box-shadow: inset 0px -1px 0px 0px ${({ theme }) => rgba(theme.colors.textColor, 0.3)};
     border: none;
+    color: ${({ theme }) => theme.colors.textColor};
     cursor: pointer;
     display: flex;
     font-size: 16px;

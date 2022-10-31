@@ -76,7 +76,7 @@ const SectionPage: React.FC<Props> = ({ response, error, url }) => {
                         <Card item={item} key={item.id} />
                     ))}
                 </Grid>
-                {(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
+                {!!(response.pages && response.currentPage) && <Pagination totalPages={response.pages} currentPage={response.currentPage} url={url} />}
             </div>
         </Layout>
     )

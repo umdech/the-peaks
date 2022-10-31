@@ -10,7 +10,7 @@ type Props = {
     children: JSX.Element
 }
 const Layout = ({ title, children }: Props) => {
-    const the_title: string = `The peaks${title ? ` - ${title}` : ``}`
+    const the_title: string = `The Peaks${title ? ` - ${title}` : ``}`
     return (
         <>
             <Head>
